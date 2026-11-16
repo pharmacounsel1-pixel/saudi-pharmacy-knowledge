@@ -1,0 +1,308 @@
+const categoryLabel = {
+  all: { en: "All", ar: "الكل" },
+  pain: { en: "Pain & fever", ar: "الألم والحمى" },
+  digestive: { en: "Digestive", ar: "الهضمي" },
+  antibiotic: { en: "Antibiotic", ar: "مضاد حيوي" },
+  allergy: { en: "Allergy", ar: "الحساسية" },
+  cardio: { en: "Cardio", ar: "القلب" },
+  metabolic: { en: "Metabolic", ar: "الأيض" },
+  respiratory: { en: "Respiratory", ar: "التنفس" }
+};
+
+const state = {
+  language: "en",
+  category: "all",
+  query: "",
+  selectedId: (window.medicines && window.medicines[0]?.id) || null
+};
+
+const refs = {
+  medicineSearch: document.getElementById("medicineSearch"),
+  searchResults: document.getElementById("searchResults"),
+  medicineList: document.getElementById("medicineList"),
+  medicineDetail: document.getElementById("medicineDetail"),
+  entryCount: document.getElementById("entryCount"),
+  languageToggle: document.getElementById("languageToggle"),
+  filterButtons: [...document.querySelectorAll(".filter-btn")],
+  translatedNodes: [...document.querySelectorAll("[data-en][data-ar]")]
+};
+
+function getVisibleMedicines() {
+  const query = state.query.trim().toLowerCase();
+
+  return medicines.filter((medicine) => {
+    const matchesCategory = state.category === "all" || medicine.category === state.category;
+    const searchableText = [
+      medicine.name,
+      medicine.generic,
+      ...medicine.brandNames,
+      ...medicine.dosageForms,
+      ...medicine.strengths,
+      ...medicine.indications,
+      ...medicine.warnings
+    ].join(" ").toLowerCase();
+
+    const matchesQuery = !query || searchableText.includes(query);
+    return matchesCategory && matchesQuery;
+  });
+}
+
+function renderFilters() {
+  refs.filterButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.category === state.category);
+  });
+}
+
+function renderList() {
+  if (!refs.medicineList || !refs.searchResults) return;
+
+  const visibleMedicines = getVisibleMedicines();
+  const countText = visibleMedicines.length === 1 ? "1 result" : `${visibleMedicines.length} results`;
+  refs.searchResults.textContent = state.language === "ar" ? `${visibleMedicines.length} ${visibleMedicines.length === 1 ? "نتيجة" : "نتائج"}` : countText;
+
+  if (!visibleMedicines.length) {
+    refs.medicineList.innerHTML = `
+      <div class="empty-state">
+        <span>⌕</span>
+        <h3 data-en="No medicines match" data-ar="لا توجد نتائج">No medicines match</h3>
+        <p data-en="Try a different name or category." data-ar="جرّب اسمًا أو فئة مختلفة.">Try a different name or category.</p>
+      </div>
+    `;
+    refs.medicineDetail.innerHTML = `
+      <div class="detail-empty">
+        <p data-en="Select a medicine to see details." data-ar="اختر دواءً لرؤية التفاصيل.">Select a medicine to see details.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const selectedExists = visibleMedicines.some((medicine) => medicine.id === state.selectedId);
+  if (!selectedExists) {
+    state.selectedId = visibleMedicines[0].id;
+  }
+
+  refs.medicineList.innerHTML = visibleMedicines
+    .map((medicine) => {
+      const isSelected = medicine.id === state.selectedId;
+      const tag = categoryLabel[medicine.category][state.language];
+      return `
+        <a class="medicine-item ${isSelected ? "selected" : ""}" href="details.html?id=${medicine.id}">
+          <div class="medicine-item-top">
+            <span class="mini-tag">${tag}</span>
+            <span class="mini-score">${medicine.strengths[0]}</span>
+          </div>
+          <h3>${medicine.name}</h3>
+          <p>${medicine.generic}</p>
+          <small>${medicine.brandNames.join(", ")}</small>
+        </a>
+      `;
+    })
+    .join("");
+
+  if (refs.medicineDetail) {
+    renderDetail();
+  }
+}
+
+function renderDetail() {
+  if (!refs.medicineDetail) return;
+
+  const selected = medicines.find((medicine) => medicine.id === state.selectedId);
+  if (!selected) {
+    refs.medicineDetail.innerHTML = `
+      <div class="detail-empty">
+        <p data-en="Select a medicine to see details." data-ar="اختر دواءً لرؤية التفاصيل.">Select a medicine to see details.</p>
+      </div>
+    `;
+    return;
+  }
+
+  refs.medicineDetail.innerHTML = `
+    <div class="detail-card">
+      <div class="detail-header">
+        <div>
+          <p class="eyebrow small" data-en="Selected medicine" data-ar="الدواء المختار">Selected medicine</p>
+          <h3>${selected.name}</h3>
+        </div>
+        <span class="detail-badge">${categoryLabel[selected.category][state.language]}</span>
+      </div>
+
+      <div class="meta-grid">
+        <div>
+          <span data-en="Generic" data-ar="الاسم العلمي">Generic</span>
+          <strong>${selected.generic}</strong>
+        </div>
+        <div>
+          <span data-en="Brand names" data-ar="الأسماء التجارية">Brand names</span>
+          <strong>${selected.brandNames.join(", ")}</strong>
+        </div>
+        <div>
+          <span data-en="Forms" data-ar="الأشكال">Forms</span>
+          <strong>${selected.dosageForms.join(", ")}</strong>
+        </div>
+        <div>
+          <span data-en="Strength" data-ar="القوة">Strength</span>
+          <strong>${selected.strengths.join(", ")}</strong>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4 data-en="Indications" data-ar="الاستعمالات">Indications</h4>
+        <ul>${selected.indications.map((item) => `<li>${item}</li>`).join("")}</ul>
+      </div>
+
+      <div class="detail-section">
+        <h4 data-en="Warnings" data-ar="التنبيهات">Warnings</h4>
+        <ul>${selected.warnings.map((item) => `<li>${item}</li>`).join("")}</ul>
+      </div>
+
+      <div class="detail-section">
+        <h4 data-en="Common interactions" data-ar="التفاعلات الشائعة">Common interactions</h4>
+        <ul>${selected.interactions.map((item) => `<li>${item}</li>`).join("")}</ul>
+      </div>
+
+      <div class="detail-section">
+        <h4 data-en="Contraindications" data-ar="موانع الاستخدام">Contraindications</h4>
+        <ul>${selected.contraindications.map((item) => `<li>${item}</li>`).join("")}</ul>
+      </div>
+
+      <div class="detail-source">
+        <p><strong data-en="Source note" data-ar="ملاحظة المصدر">Source note</strong> ${selected.source}</p>
+      </div>
+    </div>
+  `;
+
+  applyTranslations();
+}
+
+function applyTranslations() {
+  const translatedNodes = document.querySelectorAll("[data-en][data-ar]");
+  translatedNodes.forEach((node) => {
+    const key = state.language === "ar" ? "ar" : "en";
+    node.textContent = node.dataset[key];
+  });
+
+  if (refs.medicineSearch) {
+    refs.medicineSearch.placeholder = refs.medicineSearch.dataset[`placeholder-${state.language}`] || refs.medicineSearch.dataset.placeholderEn;
+  }
+
+  if (refs.languageToggle) {
+    refs.languageToggle.textContent = state.language === "ar" ? "English" : "العربية";
+  }
+
+  document.documentElement.lang = state.language;
+  document.documentElement.dir = state.language === "ar" ? "rtl" : "ltr";
+}
+
+function initHomePage() {
+  if (!refs.medicineSearch || !refs.filterButtons.length) return;
+
+  refs.medicineSearch.addEventListener("input", (event) => {
+    state.query = event.target.value;
+    renderList();
+  });
+
+  refs.filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.category = button.dataset.category;
+      renderFilters();
+      renderList();
+    });
+  });
+
+  refs.languageToggle.addEventListener("click", () => {
+    state.language = state.language === "en" ? "ar" : "en";
+    applyTranslations();
+    renderList();
+  });
+
+  refs.entryCount.textContent = medicines.length;
+  applyTranslations();
+  renderFilters();
+  renderList();
+}
+
+function initDetailPage() {
+  const detailRoot = document.getElementById("detailRoot");
+  if (!detailRoot) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const id = Number(params.get("id"));
+  const selected = medicines.find((medicine) => medicine.id === id) || medicines[0];
+
+  if (!selected) {
+    detailRoot.innerHTML = '<p class="page-empty">Medicine not found.</p>';
+    return;
+  }
+
+  const related = medicines.filter((medicine) => medicine.id !== selected.id).slice(0, 4);
+  detailRoot.innerHTML = `
+    <div class="detail-hero">
+      <div>
+        <p class="eyebrow small" data-en="Selected medicine" data-ar="الدواء المختار">Selected medicine</p>
+        <h1>${selected.name}</h1>
+        <p class="detail-subtitle">${selected.generic}</p>
+      </div>
+      <span class="detail-badge">${categoryLabel[selected.category][state.language]}</span>
+    </div>
+
+    <div class="detail-grid">
+      <section class="detail-pane">
+        <div class="meta-grid">
+          <div><span data-en="Brand names" data-ar="الأسماء التجارية">Brand names</span><strong>${selected.brandNames.join(", ")}</strong></div>
+          <div><span data-en="Forms" data-ar="الأشكال">Forms</span><strong>${selected.dosageForms.join(", ")}</strong></div>
+          <div><span data-en="Strength" data-ar="القوة">Strength</span><strong>${selected.strengths.join(", ")}</strong></div>
+          <div><span data-en="Generic" data-ar="الاسم العلمي">Generic</span><strong>${selected.generic}</strong></div>
+        </div>
+
+        <div class="detail-section">
+          <h3 data-en="Indications" data-ar="الاستعمالات">Indications</h3>
+          <ul>${selected.indications.map((i) => `<li>${i}</li>`).join("")}</ul>
+        </div>
+
+        <div class="detail-section">
+          <h3 data-en="Warnings" data-ar="التنبيهات">Warnings</h3>
+          <ul>${selected.warnings.map((i) => `<li>${i}</li>`).join("")}</ul>
+        </div>
+
+        <div class="detail-section">
+          <h3 data-en="Common interactions" data-ar="التفاعلات الشائعة">Common interactions</h3>
+          <ul>${selected.interactions.map((i) => `<li>${i}</li>`).join("")}</ul>
+        </div>
+
+        <div class="detail-section">
+          <h3 data-en="Contraindications" data-ar="موانع الاستخدام">Contraindications</h3>
+          <ul>${selected.contraindications.map((i) => `<li>${i}</li>`).join("")}</ul>
+        </div>
+
+        <div class="detail-source">
+          <p><strong data-en="Source note" data-ar="ملاحظة المصدر">Source note</strong> ${selected.source}</p>
+        </div>
+      </section>
+
+      <aside class="related-panel">
+        <h3 data-en="More medicines" data-ar="أدوية أخرى">More medicines</h3>
+        <div class="related-list">
+          ${related.map((medicine) => `
+            <a href="details.html?id=${medicine.id}" class="related-card">
+              <strong>${medicine.name}</strong>
+              <span>${medicine.generic}</span>
+            </a>
+          `).join("")}
+        </div>
+      </aside>
+    </div>
+  `;
+
+  applyTranslations();
+}
+
+function init() {
+  if (document.body.dataset.page === "detail") {
+    initDetailPage();
+  } else {
+    initHomePage();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", init);
