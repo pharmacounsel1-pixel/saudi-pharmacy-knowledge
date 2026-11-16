@@ -3,17 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Saudi medicine reference website with searchable drug information, categories, and official source guidance."
-    />
+    <meta name="description" content="Saudi medicine directory and reference website for quick lookup of common medicines and official source guidance." />
     <title>Saudi Medicine Reference</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
   </head>
@@ -24,11 +18,13 @@
           <span class="brand-mark">✚</span>
           <span class="brand-text">Saudi<span>Medicine</span></span>
         </a>
+
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#directory" data-en="Directory" data-ar="الدليل">Directory</a>
           <a href="#sources" data-en="Sources" data-ar="المصادر">Sources</a>
           <a href="#about" data-en="About" data-ar="حول">About</a>
         </nav>
+
         <button id="languageToggle" class="lang-toggle" type="button" aria-label="Toggle language">العربية</button>
       </div>
     </header>
@@ -39,7 +35,8 @@
           <div class="hero-copy">
             <p class="eyebrow" data-en="Saudi medicine reference" data-ar="مرجع الأدوية في السعودية">Saudi medicine reference</p>
             <h1 data-en="Medicine information with safer checking." data-ar="معلومات دوائية مع فحصٍ أكثر أماناً.">Medicine information with safer checking.</h1>
-            <p class="lead" data-en="Search commonly used medicines, review general reference details, and follow the official Saudi regulator for product-specific verification." data-ar="ابحث في الأدوية الشائعة، واستعرض تفاصيل مرجعية عامة، ثم اذهب إلى الجهة الرسمية في السعودية للتحقق من تفاصيل المنتج.">Search commonly used medicines, review general reference details, and follow the official Saudi regulator for product-specific verification.</p>
+            <p class="lead" data-en="Browse common medicines, review reference details, and use official national sources before relying on product-specific information." data-ar="تصفح الأدوية الشائعة، واستعرض التفاصيل المرجعية، ثم استخدم المصادر الرسمية الوطنية قبل الاعتماد على معلومات منتج معين.">Browse common medicines, review reference details, and use official national sources before relying on product-specific information.</p>
+
             <div class="hero-actions">
               <a href="#directory" class="primary-btn" data-en="Browse directory" data-ar="تصفح الدليل">Browse directory</a>
               <a href="#sources" class="secondary-btn" data-en="Official sources" data-ar="مصادر رسمية">Official sources</a>
@@ -53,7 +50,7 @@
             </div>
             <div class="panel-card">
               <span class="panel-label" data-en="Main categories" data-ar="الفئات الرئيسية">Main categories</span>
-              <strong>6</strong>
+              <strong>7</strong>
             </div>
             <div class="panel-card warning-card">
               <span class="panel-label" data-en="Safety reminder" data-ar="تذكير السلامة">Safety reminder</span>
@@ -70,19 +67,13 @@
               <p class="eyebrow small" data-en="Drug directory" data-ar="دليل الأدوية">Drug directory</p>
               <h2 data-en="Find a medicine" data-ar="ابحث عن دواء">Find a medicine</h2>
             </div>
-            <p class="section-copy" data-en="Use the search to filter sample medicine entries. Always confirm approved product details with the SFDA and the manufacturer leaflet." data-ar="استخدم البحث لتصفية بعض إدخالات الأدوية. تأكد دائماً من تفاصيل المنتج المعتمدة مع الهيئة العامة للغذاء والدواء ونشرة الشركة المصنعة.">Use the search to filter sample medicine entries. Always confirm approved product details with the SFDA and the manufacturer leaflet.</p>
+            <p class="section-copy" data-en="Search across common medicine entries. Product details may vary by strength and brand, so always confirm with the latest approved leaflet and Saudi regulator information." data-ar="ابحث داخل إدخالات الأدوية الشائعة. قد تختلف تفاصيل المنتج حسب القوة والعلامة التجارية، لذا تأكد دائمًا من آخر نشرة معتمدة ومعلومات الهيئة السعودية.">Search across common medicine entries. Product details may vary by strength and brand, so always confirm with the latest approved leaflet and Saudi regulator information.</p>
           </div>
 
           <div class="controls">
             <label class="search-box" aria-label="Search medicines">
               <span>⌕</span>
-              <input
-                id="medicineSearch"
-                type="search"
-                data-placeholder-en="Search by medicine, generic name, or brand..."
-                data-placeholder-ar="ابحث باسم الدواء أو الاسم العلمي أو العلامة التجارية..."
-                placeholder="Search by medicine, generic name, or brand..."
-              />
+              <input id="medicineSearch" type="search" data-placeholder-en="Search by medicine, generic name, or brand..." data-placeholder-ar="ابحث باسم الدواء أو الاسم العلمي أو العلامة التجارية..." placeholder="Search by medicine, generic name, or brand..." />
             </label>
             <span id="searchResults" class="result-text">0 results</span>
           </div>
@@ -95,6 +86,7 @@
             <button class="filter-btn" data-category="allergy" type="button" data-en="Allergy" data-ar="الحساسية">Allergy</button>
             <button class="filter-btn" data-category="cardio" type="button" data-en="Cardio" data-ar="القلب">Cardio</button>
             <button class="filter-btn" data-category="metabolic" type="button" data-en="Metabolic" data-ar="الأيض">Metabolic</button>
+            <button class="filter-btn" data-category="respiratory" type="button" data-en="Respiratory" data-ar="التنفس">Respiratory</button>
           </div>
 
           <div class="directory-grid">
@@ -110,9 +102,10 @@
             <p class="eyebrow small" data-en="Why this website" data-ar="لماذا هذا الموقع">Why this website</p>
             <h2 data-en="Useful reference information, with clear limits." data-ar="معلومات مرجعية مفيدة مع حدود واضحة.">Useful reference information, with clear limits.</h2>
           </div>
+
           <div class="about-text">
-            <p data-en="This site is designed for general public education and quick reference. It is not a full Saudi drug register and it cannot guarantee that every medicine in the market is listed or that product details are completely current." data-ar="تم تصميم هذا الموقع للتثقيف العام والمرجع السريع. إنه ليس سجل الأدوية السعودي الكامل، ولا يمكنه ضمان تسجيل كل دواء في السوق أو أن تفاصيل المنتجات محدثة بالكامل.">This site is designed for general public education and quick reference. It is not a full Saudi drug register and it cannot guarantee that every medicine in the market is listed or that product details are completely current.</p>
-            <p data-en="Always check the product leaflet, the Saudi Food and Drug Authority (SFDA), and the pharmacist or physician supervising your care." data-ar="تحقق دائماً من نشرة المنتج والهيئة العامة للغذاء والدواء (SFDA) والصيدلي أو الطبيب المشرف على رعايتك.">Always check the product leaflet, the Saudi Food and Drug Authority (SFDA), and the pharmacist or physician supervising your care.</p>
+            <p data-en="This website is for general education and quick comparison. It is not a complete Saudi drug register and it cannot guarantee that every medicine in the market is listed or that every detail is current." data-ar="هذا الموقع مخصص للتعليم العام والمقارنة السريعة. إنه ليس سجل الأدوية السعودي الكامل، ولا يمكنه ضمان أن كل دواء في السوق مسجل أو أن كل تفاصيله محدثة.">This website is for general education and quick comparison. It is not a complete Saudi drug register and it cannot guarantee that every medicine in the market is listed or that every detail is current.</p>
+            <p data-en="Always check the product leaflet, the Saudi Food and Drug Authority (SFDA), and the pharmacist or physician supervising your care." data-ar="تحقق دائماً من النشرة الرسمية للمنتج، والهيئة العامة للغذاء والدواء (SFDA)، والصيدلي أو الطبيب المشرف على رعايتك.">Always check the product leaflet, the Saudi Food and Drug Authority (SFDA), and the pharmacist or physician supervising your care.</p>
           </div>
         </div>
       </section>
@@ -134,11 +127,12 @@
                 <small data-en="Check product registration, safety notices, and updates." data-ar="تحقق من التسجيل، التنبيهات، والتحديثات.">Check product registration, safety notices, and updates.</small>
               </div>
             </a>
+
             <a href="https://www.who.int/health-topics/pharmaceuticals" target="_blank" rel="noopener noreferrer" class="source-link">
               <span class="source-icon">↗</span>
               <div>
                 <strong data-en="WHO pharmaceutical information" data-ar="معلومات المنظمة العالمية للصحة">WHO pharmaceutical information</strong>
-                <small data-en="Global medicines and safety reference guidance." data-ar="مرجع عالمي لمعلومات الأدوية والسلامة.">Global medicines and safety reference guidance.</small>
+                <small data-en="Global medicine and safety reference guidance." data-ar="مرجع عالمي للأدوية والسلامة.">Global medicine and safety reference guidance.</small>
               </div>
             </a>
           </div>
